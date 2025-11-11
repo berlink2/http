@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"http-from-tcp/internal/request"
 	"log"
 	"net"
+
+	"http-from-tcp/internal/request"
 )
 
 const port = ":42069"
@@ -22,17 +23,19 @@ func main() {
 		if err != nil {
 			log.Fatalf("error: %s\n", err.Error())
 		}
-		// fmt.Println("Accepted connection from", conn.RemoteAddr())
+		fmt.Println("Accepted connection from", conn.RemoteAddr())
 
-		requestLine, err := request.RequestFromReader(conn)
-
+		req, err := request.RequestFromReader(conn)
 		if err != nil {
-			log.Fatalf("error: %s\n", err.Error())
+			log.Fatalf("error parsing request: %s\n", err.Error())
 		}
 		fmt.Println("Request line:")
-		fmt.Println("- Method:", requestLine.RequestLine.Method)
-		fmt.Println("- Target:", requestLine.RequestLine.RequestTarget)
-		fmt.Println("- Version:", requestLine.RequestLine.HttpVersion)
-		// fmt.Println("Connection to ", conn.RemoteAddr(), "closed")
+		fmt.Printf("- Method: %s\n", req.RequestLine.Method)
+		fmt.Printf("- Target: %s\n", req.RequestLine.RequestTarget)
+		fmt.Printf("- Version: %s\n", req.RequestLine.HttpVersion)
+		fmt.Println("Headers:")
+		for key, value := range req.Headers {
+			fmt.Printf("- %s: %s\n", key, value)
+		}
 	}
 }

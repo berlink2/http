@@ -1,4 +1,4 @@
-module github.com/berlink2/http
+module http-from-tcp
 
 go 1.25.4
 
